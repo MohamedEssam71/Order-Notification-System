@@ -5,9 +5,9 @@ import com.example.demo.service.OrderService;
 import java.util.ArrayList;
 
 public class CompoundOrder extends Order{
-    private ArrayList<Order> orders;
+    private ArrayList<SimpleOrder> orders;
     String type;
-    public CompoundOrder(String id, String type,ArrayList<Order>orders) {
+    public CompoundOrder(String id, String type, ArrayList<SimpleOrder>orders) {
         super(id);
         this.type = type;
         this.orders = orders;
@@ -24,10 +24,10 @@ public class CompoundOrder extends Order{
         return "compound";
     }
 
-    public void addOrder(Order order){
+    public void addOrder(SimpleOrder order){
         orders.add(order);
     }
-    public ArrayList<Order> getOrders() {
+    public ArrayList<SimpleOrder> getOrders() {
         return orders;
     }
 
@@ -38,7 +38,11 @@ public class CompoundOrder extends Order{
 
     @Override
     public ArrayList<Product> getProducts(){
-        return null;
+        ArrayList<Product> products = new ArrayList<>();
+        for(int i = 0; i < orders.size(); ++i){
+            products.addAll(orders.get(i).getProducts());
+        }
+        return products;
     }
 
     @Override
