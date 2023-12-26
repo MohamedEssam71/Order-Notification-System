@@ -20,64 +20,27 @@ import java.util.Vector;
 public class OrderController {
     @Autowired
     OrderServiceImp orderServiceImp;
-    @PostMapping("/add")
-    public Response addOrder(@RequestBody JsonNode order){
+    @PostMapping("/add/simpleOrder")
+    public Response addSimpleOrder(@RequestBody SimpleOrder order){
+        return addOrder(order);
+    }
+    @PostMapping("/add/compoundOrder")
+    public Response addCompoundOrder(@RequestBody CompoundOrder order){
+        return addOrder(order);
+    }
+    public Response addOrder(Order order){
         Response response = new Response();
-        Order newOrder;
-        if (order.get("type").textValue().equals("simple")) {
-            newOrder = createSimpleOrder(order);
-        } else if (order.get("type").textValue().equals("compound")) {
-            newOrder = createCompoundOrder(order);
-        } else {
+        order.display();
+        boolean status = orderServiceImp.addOrder(order);
+        if(status){
+            response.setStatus(true);
+            response.setMessage("Order added successfully");
+        }
+        else{
             response.setStatus(false);
-            response.setMessage("Invalid order type");
-            return response;
+            response.setMessage("Order already exists");
         }
-
-        newOrder.display();
-        Database.orderDB.put(newOrder.getId(), newOrder);
-        response.setStatus(true);
-        response.setMessage("Order added successfully");
         return response;
-    }
-    private Order createSimpleOrder(JsonNode order) {
-        ArrayList<Product> products = new ArrayList<>();
-
-        for (JsonNode productNode : order.get("products")) {
-            Product product = createProduct(productNode);
-            products.add(product);
-        }
-
-        return new SimpleOrder(order.get("id").textValue(), "simple", products);
-    }
-
-    private Order createCompoundOrder(JsonNode order) {
-        ArrayList<Order> subOrders = new ArrayList<>();
-
-        for (JsonNode subOrderNode : order.get("subOrders")) {
-            Order subOrder;
-            if (subOrderNode.get("type").textValue().equals("simple")) {
-                subOrder = createSimpleOrder(subOrderNode);
-            } else if (subOrderNode.get("type").textValue().equals("compound")) {
-                subOrder = createCompoundOrder(subOrderNode);
-            } else {
-                // Handle unknown sub-order type
-                throw new IllegalArgumentException("Unknown sub-order type");
-            }
-
-            subOrders.add(subOrder);
-        }
-
-        return new CompoundOrder(order.get("id").textValue(), "compound", subOrders);
-    }
-
-    private Product createProduct(JsonNode productNode) {
-        String serial = productNode.get("id").textValue();
-        String name = productNode.get("name").textValue();
-        Double price = productNode.get("price").doubleValue();
-        Integer available = productNode.get("available").intValue();
-
-        return new Product(serial, name, price, available);
     }
 
     @DeleteMapping("/delete/{id}")
