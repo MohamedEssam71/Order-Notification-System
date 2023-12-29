@@ -13,6 +13,7 @@ public interface IOrderService {
 
     public Boolean payOrder(Order order, double fees);
 
+    public Boolean shipOrder(String id);
 
     public Double getOrderPrice(String id);
 }
