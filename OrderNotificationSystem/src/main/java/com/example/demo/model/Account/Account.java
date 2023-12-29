@@ -3,13 +3,13 @@ package com.example.demo.model.Account;
 public class Account {
     String username;
     String email;
-    String password;
+    String phone;
     double balance;
 
-    public Account(String username, String email, String password, double balance) {
+    public Account(String username, String email, String phone, double balance) {
         this.username = username;
         this.email = email;
-        this.password = password;
+        this.phone = phone;
         this.balance = balance;
     }
 
@@ -29,12 +29,12 @@ public class Account {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public double getBalance() {
@@ -43,5 +43,10 @@ public class Account {
 
     public void setBalance(double balance) {
         this.balance = balance;
+    }
+
+    public void display(){
+        System.out.println("Name: " + this.username);
+        System.out.println("Balance: " + this.balance);
     }
 }
