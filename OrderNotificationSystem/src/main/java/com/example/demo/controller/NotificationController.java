@@ -22,7 +22,7 @@ public class NotificationController {
 
     @PostMapping("/add")
     public Response add(@RequestBody NotificationChannel notificationChannel) {
-        JsonNode user = notificationChannel.getUser();
+        String user = notificationChannel.getUsername();
         String notificationMessageType = notificationChannel.getMessageType();
         Map<String, Object> notificationMessageParams = notificationChannel.getMessageParams();
 
