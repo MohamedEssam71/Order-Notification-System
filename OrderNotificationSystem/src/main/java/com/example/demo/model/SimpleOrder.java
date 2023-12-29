@@ -6,17 +6,10 @@ import java.util.ArrayList;
 
 public class SimpleOrder extends Order {
     private ArrayList<Product> products;
-    String type;
 
-    public SimpleOrder(String buyerName, String id, String type, ArrayList<Product> products) {
+    public SimpleOrder(String buyerName, String id, ArrayList<Product> products) {
         super(id, buyerName);
-        this.type = type;
         this.products = products;
-    }
-
-    @Override
-    public String getType() {
-        return type;
     }
 
     @Override
@@ -31,7 +24,7 @@ public class SimpleOrder extends Order {
 
     @Override
     public void display() {
-        System.out.print("ID: " + this.id + " Type: " + this.type);
+        System.out.print("ID: " + this.id + " Buyer: " + this.buyerName);
         for (int i = 0; i < products.size(); ++i) {
             System.out.print("\n\tSerial: " + products.get(i).serialNumber
                     + "\n\tName: " + products.get(i).name + "\n\tPrice: " + products.get(i).price
