@@ -1,11 +1,16 @@
 package com.example.demo.model;
 
+import com.example.demo.model.Account.Account;
+
 import java.util.ArrayList;
 
 public abstract class Order {
     protected String id;
-    Order(String id){
+    protected String buyerName;
+
+    Order(String id, String buyerName) {
         this.id = id;
+        this.buyerName = buyerName;
     }
 
     public String getId() {
@@ -13,7 +18,10 @@ public abstract class Order {
     }
 
     public abstract String getType();
+
     public abstract Double getPrice();
+
     public abstract ArrayList<Product> getProducts();
+
     public abstract void display();
 }

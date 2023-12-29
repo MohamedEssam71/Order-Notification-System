@@ -4,15 +4,17 @@ import com.example.demo.service.OrderService;
 
 import java.util.ArrayList;
 
-public class CompoundOrder extends Order{
+public class CompoundOrder extends Order {
     private ArrayList<SimpleOrder> orders;
     String type;
-    public CompoundOrder(String id, String type, ArrayList<SimpleOrder>orders) {
-        super(id);
+
+    public CompoundOrder(String buyerName, String id, String type, ArrayList<SimpleOrder> orders) {
+        super(id, buyerName);
         this.type = type;
         this.orders = orders;
     }
-//    public CompoundOrder(Order order, OrderService orderService) {
+
+    //    public CompoundOrder(Order order, OrderService orderService) {
 //        super(order.getId());
 //        for (Order childOrder : order.getChildOrders()) {
 //            Order newChildOrder = orderService.addOrder(childOrder);
@@ -24,9 +26,10 @@ public class CompoundOrder extends Order{
         return "compound";
     }
 
-    public void addOrder(SimpleOrder order){
+    public void addOrder(SimpleOrder order) {
         orders.add(order);
     }
+
     public ArrayList<SimpleOrder> getOrders() {
         return orders;
     }
@@ -37,9 +40,9 @@ public class CompoundOrder extends Order{
     }
 
     @Override
-    public ArrayList<Product> getProducts(){
+    public ArrayList<Product> getProducts() {
         ArrayList<Product> products = new ArrayList<>();
-        for(int i = 0; i < orders.size(); ++i){
+        for (int i = 0; i < orders.size(); ++i) {
             products.addAll(orders.get(i).getProducts());
         }
         return products;
@@ -48,7 +51,7 @@ public class CompoundOrder extends Order{
     @Override
     public void display() {
         System.out.println("ID: " + this.id + " Type: " + this.type);
-        for(int i = 0; i < orders.size(); ++i){
+        for (int i = 0; i < orders.size(); ++i) {
             orders.get(i).display();
             System.out.println("------------------------------------");
         }
