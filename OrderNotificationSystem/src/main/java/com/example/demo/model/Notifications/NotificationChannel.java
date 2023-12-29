@@ -5,24 +5,24 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.util.*;
 
 public class NotificationChannel {
-    JsonNode user;
+    String username;
     String messageType;
     Map<String, Object> messageParams;
     List<String> channels;
 
-    public NotificationChannel(JsonNode user, String messageType, Map<String, Object> messageParams, List<String> channels) {
-        this.user = user;
+    public NotificationChannel(String user, String messageType, Map<String, Object> messageParams, List<String> channels) {
+        this.username = user;
         this.messageType = messageType;
         this.messageParams = messageParams;
         this.channels = channels;
     }
 
-    public JsonNode getUser() {
-        return user;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUser(JsonNode user) {
-        this.user = user;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getMessageType() {
