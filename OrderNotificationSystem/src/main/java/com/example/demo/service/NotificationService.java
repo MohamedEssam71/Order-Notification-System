@@ -3,7 +3,6 @@ package com.example.demo.service;
 import com.example.demo.model.Account.Account;
 import com.example.demo.model.Notifications.*;
 import com.example.demo.Database;
-import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +42,6 @@ public class NotificationService implements INotificationService {
         }
         Notification notification = Database.notificationsQueue.poll();
         notification.send();
-        // must simulate wait here somehow??
         return true;
     }
 }
