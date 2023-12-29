@@ -32,7 +32,7 @@ public class OrderController {
             allValid &= orderService.validateOrder(sub);
         }
 
-        double personFees = orderFees/order.getOrders().size();
+        double personFees = orderFees / order.getOrders().size();
 
         if (allValid) {
             for (Order sub : order.getOrders()) {
@@ -86,6 +86,20 @@ public class OrderController {
     @GetMapping("/getPrice/{id}")
     public Double getOrderPrice(@PathVariable("id") String id) {
         return orderService.getOrder(id).getPrice();
+    }
+
+    @GetMapping("/ship/{id}")
+    public Response shipOrder(@PathVariable("id") String id) {
+        Response response = new Response();
+        Boolean status = orderService.shipOrder(id);
+        if (status) {
+            response.setStatus(true);
+            response.setMessage("Order shipping");
+        } else {
+            response.setStatus(false);
+            response.setMessage("Can't start shipping order");
+        }
+        return response;
     }
 }
 

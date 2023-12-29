@@ -52,6 +52,13 @@ public class OrderService implements IOrderService {
         return accService.updateBalance(order.getBuyerName(), -(order.getPrice() + fees));
     }
 
+    @Override
+    public Boolean shipOrder(String id) {
+        Order order = getOrder(id);
+        order.setShipped(true);
+        return true;
+    }
+
 
     @Override
     public Double getOrderPrice(String id) {
