@@ -39,23 +39,4 @@ public class NotificationController {
         response.setMessage("Notification added");
         return response;
     }
-
-    @GetMapping("/send")
-    public Response send() {
-        return sendNotification();
-    }
-
-
-    public Response sendNotification() {
-        Response response = new Response();
-        boolean status = notSvc.sendNotification();
-        if (status) {
-            response.setStatus(true);
-            response.setMessage("Notification sent");
-        } else {
-            response.setStatus(false);
-            response.setMessage("Error sending notification");
-        }
-        return response;
-    }
 }
