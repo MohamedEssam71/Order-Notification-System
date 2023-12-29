@@ -13,11 +13,13 @@ public abstract class Order {
         this.buyerName = buyerName;
     }
 
+    public String getBuyerName() {
+        return buyerName;
+    }
+
     public String getId() {
         return id;
     }
-
-    public abstract String getType();
 
     public abstract Double getPrice();
 

@@ -1,52 +1,72 @@
 package com.example.demo.controller;
 
-import com.example.demo.Database;
 import com.example.demo.model.*;
-import com.example.demo.service.OrderServiceImp;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.util.JSONPObject;
-import org.apache.tomcat.util.json.JSONParser;
+import com.example.demo.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Vector;
 
 @RestController
 @RequestMapping("/order")
 public class OrderController {
     @Autowired
-    OrderServiceImp orderServiceImp;
+    OrderService orderService;
+    final double orderFees = 50.0;
+
     @PostMapping("/add/simpleOrder")
-    public Response addSimpleOrder(@RequestBody SimpleOrder order){
+    public Response addSimpleOrder(@RequestBody SimpleOrder order) {
+        if (orderService.validateOrder(order)) {
+            orderService.payOrder(order, orderFees);
+        } else {
+            Response response = new Response();
+            response.setStatus(false);
+            response.setMessage("Order is invalid");
+            return response;
+        }
         return addOrder(order);
     }
+
     @PostMapping("/add/compoundOrder")
-    public Response addCompoundOrder(@RequestBody CompoundOrder order){
+    public Response addCompoundOrder(@RequestBody CompoundOrder order) {
+        boolean allValid = true;
+        for (Order sub : order.getOrders()) {
+            allValid &= orderService.validateOrder(sub);
+        }
+
+        double personFees = orderFees/order.getOrders().size();
+
+        if (allValid) {
+            for (Order sub : order.getOrders()) {
+                orderService.payOrder(sub, personFees);
+            }
+        } else {
+            Response response = new Response();
+            response.setStatus(false);
+            response.setMessage("One of the orders is invalid");
+            return response;
+        }
         return addOrder(order);
     }
-    public Response addOrder(Order order){
+
+    public Response addOrder(Order order) {
         Response response = new Response();
-        order.display();
-        boolean status = orderServiceImp.addOrder(order);
-        if(status){
+        Integer status = orderService.addOrder(order);
+        if (status == 1) {
             response.setStatus(true);
             response.setMessage("Order added successfully");
-        }
-        else{
+        } else {
             response.setStatus(false);
-            response.setMessage("Order already exists");
+            if (status == 0) {
+                response.setMessage("Order already exists");
+            } else if (status == -1) {
+                response.setMessage("No accounts with this buyer name");
+            }
         }
         return response;
     }
 
     @DeleteMapping("/delete/{id}")
-    public Response removeOrder(@PathVariable("id") String id){
-        System.out.println("in delete with id:"+id);
-        boolean res = orderServiceImp.removeOrder(id);
+    public Response removeOrder(@PathVariable("id") String id) {
+        boolean res = orderService.removeOrder(id);
         Response response = new Response();
         if (!res) {
             response.setStatus(false);
@@ -57,15 +77,15 @@ public class OrderController {
         response.setMessage("Order deleted successfully");
         return response;
     }
+
     @GetMapping("/get/{id}")
-    public Order getOrder(@PathVariable("id") String id){
-        System.out.println("in get with id:"+id);
-        return orderServiceImp.getOrder(id);
+    public Order getOrder(@PathVariable("id") String id) {
+        return orderService.getOrder(id);
     }
+
     @GetMapping("/getPrice/{id}")
-    public Double getOrderPrice(String id){
-        System.out.println("in getPrice with id:"+id);
-        return orderServiceImp.getOrder(id).getPrice();
+    public Double getOrderPrice(@PathVariable("id") String id) {
+        return orderService.getOrder(id).getPrice();
     }
 }
 

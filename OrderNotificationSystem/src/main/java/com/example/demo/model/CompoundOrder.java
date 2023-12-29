@@ -1,29 +1,13 @@
 package com.example.demo.model;
 
-import com.example.demo.service.OrderService;
-
 import java.util.ArrayList;
 
 public class CompoundOrder extends Order {
     private ArrayList<SimpleOrder> orders;
-    String type;
 
-    public CompoundOrder(String buyerName, String id, String type, ArrayList<SimpleOrder> orders) {
+    public CompoundOrder(String buyerName, String id, ArrayList<SimpleOrder> orders) {
         super(id, buyerName);
-        this.type = type;
         this.orders = orders;
-    }
-
-    //    public CompoundOrder(Order order, OrderService orderService) {
-//        super(order.getId());
-//        for (Order childOrder : order.getChildOrders()) {
-//            Order newChildOrder = orderService.addOrder(childOrder);
-//            this.addOrder(newChildOrder);
-//        }
-//    }
-    @Override
-    public String getType() {
-        return "compound";
     }
 
     public void addOrder(SimpleOrder order) {
@@ -50,7 +34,7 @@ public class CompoundOrder extends Order {
 
     @Override
     public void display() {
-        System.out.println("ID: " + this.id + " Type: " + this.type);
+        System.out.println("ID: " + this.id + " Buyer: " + this.buyerName);
         for (int i = 0; i < orders.size(); ++i) {
             orders.get(i).display();
             System.out.println("------------------------------------");
