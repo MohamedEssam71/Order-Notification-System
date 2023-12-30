@@ -4,6 +4,7 @@ import com.example.demo.Database;
 import com.example.demo.model.Account.Account;
 import com.example.demo.model.Order;
 import com.example.demo.model.OrderStatus;
+import com.example.demo.model.OrderType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,11 +38,8 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public Boolean removeOrder(String id) {
-        if (!orderExists(id)) {
-            return false;
-        }
-        Database.orderDB.remove(id);
+    public Boolean setOrderType(String id, OrderType type) {
+        Database.orderType.put(id, type);
         return true;
     }
 
@@ -51,6 +49,14 @@ public class OrderService implements IOrderService {
             return null;
         }
         return Database.orderDB.get(id);
+    }
+
+    @Override
+    public OrderType getOrderType(String id) {
+        if(!orderExists(id)){
+            return null;
+        }
+        return Database.orderType.get(id);
     }
 
     @Override

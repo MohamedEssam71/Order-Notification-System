@@ -29,6 +29,7 @@ public class OrderController {
             response.setMessage("Order is invalid");
             return response;
         }
+        orderService.setOrderType(order.getId(), OrderType.SIMPLE);
         return addOrder(order);
     }
 
@@ -48,6 +49,7 @@ public class OrderController {
         double personFees = orderFees / order.getOrders().size();
         if (allValid) {
             for (Order sub : order.getOrders()) {
+                orderService.setOrderType(sub.getId(), OrderType.SIMPLE);
                 orderService.addOrder(sub);
                 orderService.payOrder(sub, personFees);
             }
@@ -57,6 +59,7 @@ public class OrderController {
             response.setMessage("One of the orders is invalid");
             return response;
         }
+        orderService.setOrderType(order.getId(), OrderType.COMPOUND);
         return addOrder(order);
     }
 
@@ -129,6 +132,12 @@ public class OrderController {
             return response;
         }
 
+        if(orderService.getOrderType(id) != OrderType.COMPOUND){
+            response.setStatus(false);
+            response.setMessage("Invalid order type!");
+            return response;
+        }
+
         Double personFees = orderFees / order.getOrders().size();
         for (Order sub : order.getOrders()) {
             orderService.refundOrder(sub, personFees);
@@ -153,6 +162,12 @@ public class OrderController {
         if (!exists) {
             response.setStatus(false);
             response.setMessage("Order doesn't exist");
+            return response;
+        }
+
+        if(orderService.getOrderType(id) != OrderType.SIMPLE){
+            response.setStatus(false);
+            response.setMessage("Invalid order type!");
             return response;
         }
 
