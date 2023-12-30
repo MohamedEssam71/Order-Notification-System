@@ -10,10 +10,12 @@ public interface IOrderService {
     public Order getOrder(String id);
 
     public Boolean validateOrder(Order order);
+    public Boolean validateOrderItemsAvailable(Order order);
+
 
     public Boolean payOrder(Order order, double fees);
 
     public Boolean shipOrder(String id);
 
-    public Double getOrderPrice(String id);
+    public Double calculateOrderPrice(Order order);
 }
