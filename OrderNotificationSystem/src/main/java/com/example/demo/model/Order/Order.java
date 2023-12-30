@@ -1,14 +1,11 @@
-package com.example.demo.model;
+package com.example.demo.model.Order;
 
-import com.example.demo.model.Account.Account;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public abstract class Order {
     protected String id;
     protected String buyerName;
-    protected Boolean shipped = false;
+    protected OrderStatus status = OrderStatus.PLACED;
 
     Order(String id, String buyerName) {
         this.id = id;
@@ -25,12 +22,12 @@ public abstract class Order {
 
     public abstract HashMap<String, Integer> getProducts();
 
-    public Boolean getShipped() {
-        return shipped;
+    public OrderStatus getStatus() {
+        return status;
     }
 
-    public void setShipped(Boolean shipped) {
-        this.shipped = shipped;
+    public void setStatus(OrderStatus status) {
+        this.status = status;
     }
 
 

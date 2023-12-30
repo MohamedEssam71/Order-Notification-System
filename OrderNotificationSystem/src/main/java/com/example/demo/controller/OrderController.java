@@ -1,6 +1,8 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.*;
+import com.example.demo.model.Order.*;
+import com.example.demo.service.OrderService;
 import com.example.demo.model.Notifications.NotificationChannel;
 import com.example.demo.service.INotificationService;
 import com.example.demo.service.IOrderService;
@@ -39,6 +41,7 @@ public class OrderController {
             response.setMessage("Order is invalid");
             return response;
         }
+        orderService.setOrderType(order.getId(), OrderType.SIMPLE);
         return addOrder(order);
     }
 
@@ -58,6 +61,8 @@ public class OrderController {
         double personFees = orderFees / order.getOrders().size();
         if (allValid) {
             for (Order sub : order.getOrders()) {
+                orderService.setOrderType(sub.getId(), OrderType.SIMPLE);
+                orderService.addOrder(sub);
                 orderService.payOrder(sub, personFees);
             }
         } else {
@@ -66,6 +71,7 @@ public class OrderController {
             response.setMessage("One of the orders is invalid");
             return response;
         }
+        orderService.setOrderType(order.getId(), OrderType.COMPOUND);
         return addOrder(order);
     }
 
@@ -89,20 +95,6 @@ public class OrderController {
         return response;
     }
 
-    @DeleteMapping("/delete/{id}")
-    public Response removeOrder(@PathVariable("id") String id) {
-        boolean res = orderService.removeOrder(id);
-        Response response = new Response();
-        if (!res) {
-            response.setStatus(false);
-            response.setMessage("Order Doesn't Exists");
-            return response;
-        }
-        response.setStatus(true);
-        response.setMessage("Order deleted successfully");
-        return response;
-    }
-
     @GetMapping("/get/{id}")
     public Order getOrder(@PathVariable("id") String id) {
         return orderService.getOrder(id);
@@ -117,6 +109,14 @@ public class OrderController {
     @GetMapping("/ship/{id}")
     public Response shipOrder(@PathVariable("id") String id) {
         Response response = new Response();
+
+        Boolean exists = orderService.orderExists(id);
+        if (!exists) {
+            response.setStatus(false);
+            response.setMessage("Order doesn't exist");
+            return response;
+        }
+
         Boolean status = orderService.shipOrder(id);
 
         if (status) {
@@ -132,7 +132,7 @@ public class OrderController {
         }
         return response;
     }
-
+  
     private NotificationChannel createNotificationChannel(Order order, String type, String lang) {
         Map<String, Object> notificationParams = new HashMap<>() {
             {
@@ -150,41 +150,78 @@ public class OrderController {
 
 }
 
+    @GetMapping("/refund/compound/{id}")
+    public Response refundCompound(@PathVariable("id") String id) {
+        Response response = new Response();
 
-/*
-    test simple
-            {
-                "id": "order1",
-                "type": "simple",
-                "products": [
-                    {"id": "product1", "name": "Product 1", "price": 10.0, "available":20},
-                    {"id": "product2", "name": "Product 2", "price": 20.0, "available":30}
-                ]
-            }
+        Boolean exists = orderService.orderExists(id);
+        if (!exists) {
+            response.setStatus(false);
+            response.setMessage("Order doesn't exist");
+            return response;
+        }
 
-     */
-        /*
-        testCompound
-        {
-                "id": "order1",
-                "type": "compound",
-                "subOrders": [
-                    {
-                        "id": "order2",
-                            "type": "simple",
-                            "products": [
-                        {"id": "product1", "name": "Product 1", "price": 10.0, "available":10},
-                        {"id": "product2", "name": "Product 2", "price": 20.0, "available":20}
-                    ]
-                    },
-                    {
-                        "id": "order3",
-                            "type": "simple",
-                            "products": [
-                        {"id": "product3", "name": "Product 3", "price": 30.0, "available":30}
-                    ]
-                    }
-                ]
+        CompoundOrder order = (CompoundOrder) orderService.getOrder(id);
 
+        if (order.getStatus() == OrderStatus.REFUNDED) {
+            response.setStatus(false);
+            response.setMessage("Order Already refunded");
+            return response;
+        }
+
+        if(orderService.getOrderType(id) != OrderType.COMPOUND){
+            response.setStatus(false);
+            response.setMessage("Invalid order type!");
+            return response;
+        }
+
+        Double personFees = orderFees / order.getOrders().size();
+        for (Order sub : order.getOrders()) {
+            orderService.refundOrder(sub, personFees);
+        }
+        order.setStatus(OrderStatus.REFUNDED);
+
+        if (order.getStatus() == OrderStatus.SHIPPED) {
+            response.setStatus(true);
+            response.setMessage("Only order price refunded");
+        } else {
+            response.setStatus(true);
+            response.setMessage("Order fully refunded");
+        }
+        return response;
     }
-    */
+
+    @GetMapping("/refund/simple/{id}")
+    public Response refundSimple(@PathVariable("id") String id) {
+        Response response = new Response();
+
+        Boolean exists = orderService.orderExists(id);
+        if (!exists) {
+            response.setStatus(false);
+            response.setMessage("Order doesn't exist");
+            return response;
+        }
+
+        if(orderService.getOrderType(id) != OrderType.SIMPLE){
+            response.setStatus(false);
+            response.setMessage("Invalid order type!");
+            return response;
+        }
+
+        Order order = orderService.getOrder(id);
+        Boolean refunded = orderService.refundOrder(order, orderFees);
+        if (refunded) {
+            if (order.getStatus() == OrderStatus.SHIPPED) {
+                response.setStatus(true);
+                response.setMessage("Only order price refunded");
+            } else {
+                response.setStatus(true);
+                response.setMessage("Order fully refunded");
+            }
+        } else {
+            response.setStatus(false);
+            response.setMessage("Order Already refunded");
+        }
+        return response;
+    }
+}
