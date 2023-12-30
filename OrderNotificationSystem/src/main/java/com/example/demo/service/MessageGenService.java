@@ -38,16 +38,16 @@ public class MessageGenService {
                 if(lang.equals("en")){
                     template = "Order ${x} created";
                 }
-                else{
-                    template = "الاردر ${x} تم انشائه";
+                else if(lang.equals("ar")){
+                    template = "الاوردر ${x} تم انشائه";
                 }
             }
             case "order-shipped" -> {
                 if(lang.equals("en")){
                     template = "Order ${x} shipped";
                 }
-                else{
-                    template = "الاردر ${x} تم شحنه";
+                else if(lang.equals("ar")){
+                    template = "الاوردر ${x} تم شحنه";
                 }
             }
         }
