@@ -28,9 +28,10 @@ public class NotificationController {
     public Response add(@RequestBody NotificationChannel notificationChannel) {
         String user = notificationChannel.getUsername();
         String notificationMessageType = notificationChannel.getMessageType();
+        String lang = notificationChannel.getLang();
         Map<String, Object> notificationMessageParams = notificationChannel.getMessageParams();
 
-        String message = msgSvc.generate(notificationMessageType, notificationMessageParams);
+        String message = msgSvc.generate(notificationMessageType, notificationMessageParams, lang);
         statisticsService.addTemplateUsage(notificationMessageType);
 
         List<String> sendChannels = notificationChannel.getChannels();
