@@ -11,6 +11,10 @@ public class NotificationService implements INotificationService {
 
     @Autowired
     IAccService accService;
+
+    @Autowired
+    IStatisticsService statisticsService;
+
     @Override
     public Notification createNotification(String username, String message, String type) {
         SendService svc = null;
@@ -20,10 +24,12 @@ public class NotificationService implements INotificationService {
             case "SMS" -> {
                 svc = new SendSMSService();
                 command = new SendCommand(user.getPhone(), message, svc);
+                statisticsService.addNotifiedSMS(user.getPhone());
             }
             case "Email" -> {
                 svc = new SendEmailService();
                 command = new SendCommand(user.getEmail(), message, svc);
+                statisticsService.addNotifiedEmail(user.getEmail());
             }
         }
         return new Notification(command);
