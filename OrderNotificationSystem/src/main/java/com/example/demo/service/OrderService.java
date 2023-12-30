@@ -38,7 +38,6 @@ public class OrderService implements IOrderService {
     @Override
     public Order getOrder(String id) {
         Order order = Database.orderDB.get(id);
-        order.display();
         return order;
     }
 

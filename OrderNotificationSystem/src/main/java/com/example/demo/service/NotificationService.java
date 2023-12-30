@@ -6,6 +6,9 @@ import com.example.demo.Database;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
+
 @Service
 public class NotificationService implements INotificationService {
 
@@ -14,6 +17,9 @@ public class NotificationService implements INotificationService {
 
     @Autowired
     IStatisticsService statisticsService;
+
+    @Autowired
+    MessageGenService msgSvc;
 
     @Override
     public Notification createNotification(String username, String message, String type) {
@@ -36,13 +42,25 @@ public class NotificationService implements INotificationService {
     }
 
     @Override
-    public boolean addNotification(Notification notification) {
-        Database.notificationsQueue.add(notification);
+    public Boolean addNotification(NotificationChannel notificationChannel) {
+        String user = notificationChannel.getUsername();
+        String notificationMessageType = notificationChannel.getMessageType();
+        String lang = notificationChannel.getLang();
+        Map<String, Object> notificationMessageParams = notificationChannel.getMessageParams();
+
+        String message = msgSvc.generate(notificationMessageType, notificationMessageParams, lang);
+        statisticsService.addTemplateUsage(notificationMessageType);
+
+        List<String> sendChannels = notificationChannel.getChannels();
+        for (String sendChannel : sendChannels) {
+            Notification notification = createNotification(user, message, sendChannel);
+            Database.notificationsQueue.add(notification);
+        }
         return true;
     }
 
     @Override
-    public boolean sendNotification() {
+    public Boolean sendNotification() {
         if (Database.notificationsQueue.isEmpty()) {
             return false;
         }
