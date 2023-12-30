@@ -3,6 +3,7 @@ package com.example.demo.controller;
 
 import com.example.demo.service.IStatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -12,17 +13,17 @@ public class StatisticsController {
     @Autowired
     IStatisticsService statisticsService;
 
-    @RequestMapping("/get/mostNotifiedEmail")
+    @GetMapping("/get/mostNotifiedEmail")
     public String getMostNotifiedEmail() {
         return statisticsService.getMostNotifiedEmail();
     }
 
-    @RequestMapping("/get/mostNotifiedSMS")
+    @GetMapping("/get/mostNotifiedSMS")
     public String getMostNotifiedSMS() {
         return statisticsService.getMostNotifiedSMS();
     }
 
-    @RequestMapping("/get/mostUsedTemplate")
+    @GetMapping("/get/mostUsedTemplate")
     public String getMostUsedTemplate() {
         return statisticsService.getMostUsedTemplate();
     }
