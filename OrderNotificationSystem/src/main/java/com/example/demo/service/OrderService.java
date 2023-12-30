@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.Database;
 import com.example.demo.model.Account.Account;
 import com.example.demo.model.Order;
+import com.example.demo.model.OrderStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +17,13 @@ public class OrderService implements IOrderService {
     IProductService productService;
 
     @Override
+    public Boolean orderExists(String id) {
+        return Database.orderDB.containsKey(id);
+    }
+
+    @Override
     public Integer addOrder(Order order) {
-        if (Database.orderDB.containsKey(order.getId())) {
+        if (orderExists(order.getId())) {
             return 0;
         }
 
@@ -32,14 +38,19 @@ public class OrderService implements IOrderService {
 
     @Override
     public Boolean removeOrder(String id) {
-        return Database.orderDB.remove(id) != null;
+        if (!orderExists(id)) {
+            return false;
+        }
+        Database.orderDB.remove(id);
+        return true;
     }
 
     @Override
     public Order getOrder(String id) {
-        Order order = Database.orderDB.get(id);
-        order.display();
-        return order;
+        if (!orderExists(id)) {
+            return null;
+        }
+        return Database.orderDB.get(id);
     }
 
     @Override
@@ -66,7 +77,6 @@ public class OrderService implements IOrderService {
         return true;
     }
 
-
     @Override
     public Boolean payOrder(Order order, double fees) {
         for (String serial : order.getProducts().keySet()) {
@@ -78,18 +88,22 @@ public class OrderService implements IOrderService {
 
     @Override
     public Boolean refundOrder(Order order, double fees) {
+        if (!orderExists(order.getId())) {
+            return false;
+        }
         for (String serial : order.getProducts().keySet()) {
             Integer quantity = order.getProducts().get(serial);
             productService.updateQuantity(serial, quantity);
         }
-        Double returnedFees = order.getShipped() ? 0 : fees * 0.5;
+        Double returnedFees = order.getStatus() == OrderStatus.SHIPPED ? 0 : fees * 0.5;
+        order.setStatus(OrderStatus.REFUNDED);
         return accService.updateBalance(order.getBuyerName(), calculateOrderPrice(order) + returnedFees);
     }
 
     @Override
     public Boolean shipOrder(String id) {
         Order order = getOrder(id);
-        order.setShipped(true);
+        order.setStatus(OrderStatus.SHIPPED);
         return true;
     }
 

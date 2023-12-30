@@ -48,6 +48,7 @@ public class OrderController {
         double personFees = orderFees / order.getOrders().size();
         if (allValid) {
             for (Order sub : order.getOrders()) {
+                orderService.addOrder(sub);
                 orderService.payOrder(sub, personFees);
             }
         } else {
@@ -76,20 +77,6 @@ public class OrderController {
         return response;
     }
 
-    @DeleteMapping("/delete/{id}")
-    public Response removeOrder(@PathVariable("id") String id) {
-        boolean res = orderService.removeOrder(id);
-        Response response = new Response();
-        if (!res) {
-            response.setStatus(false);
-            response.setMessage("Order Doesn't Exists");
-            return response;
-        }
-        response.setStatus(true);
-        response.setMessage("Order deleted successfully");
-        return response;
-    }
-
     @GetMapping("/get/{id}")
     public Order getOrder(@PathVariable("id") String id) {
         return orderService.getOrder(id);
@@ -104,6 +91,14 @@ public class OrderController {
     @GetMapping("/ship/{id}")
     public Response shipOrder(@PathVariable("id") String id) {
         Response response = new Response();
+
+        Boolean exists = orderService.orderExists(id);
+        if (!exists) {
+            response.setStatus(false);
+            response.setMessage("Order doesn't exist");
+            return response;
+        }
+
         Boolean status = orderService.shipOrder(id);
         if (status) {
             response.setStatus(true);
@@ -119,20 +114,27 @@ public class OrderController {
     public Response refundCompound(@PathVariable("id") String id) {
         Response response = new Response();
 
+        Boolean exists = orderService.removeOrder(id);
+        if (!exists) {
+            response.setStatus(false);
+            response.setMessage("Order doesn't exist");
+            return response;
+        }
+
         CompoundOrder order = (CompoundOrder) orderService.getOrder(id);
 
         Double personFees = orderFees / order.getOrders().size();
         for (Order sub : order.getOrders()) {
             orderService.refundOrder(sub, personFees);
         }
+        order.setStatus(OrderStatus.REFUNDED);
 
-        Boolean status = order.getShipped();
-        if (!status) {
-            response.setStatus(true);
-            response.setMessage("Order fully refunded");
-        } else {
+        if (order.getStatus() == OrderStatus.SHIPPED) {
             response.setStatus(true);
             response.setMessage("Only order price refunded");
+        } else {
+            response.setStatus(true);
+            response.setMessage("Order fully refunded");
         }
         return response;
     }
@@ -140,55 +142,23 @@ public class OrderController {
     @GetMapping("/refund/simple/{id}")
     public Response refundSimple(@PathVariable("id") String id) {
         Response response = new Response();
+
+        Boolean exists = orderService.removeOrder(id);
+        if (!exists) {
+            response.setStatus(false);
+            response.setMessage("Order doesn't exist");
+            return response;
+        }
+
         Order order = orderService.getOrder(id);
         orderService.refundOrder(order, orderFees);
-        Boolean status = order.getShipped();
-        if (!status) {
-            response.setStatus(true);
-            response.setMessage("Order fully refunded");
-        } else {
+        if (order.getStatus() == OrderStatus.SHIPPED) {
             response.setStatus(true);
             response.setMessage("Only order price refunded");
+        } else {
+            response.setStatus(true);
+            response.setMessage("Order fully refunded");
         }
         return response;
     }
 }
-
-
-/*
-    test simple
-            {
-                "id": "order1",
-                "type": "simple",
-                "products": [
-                    {"id": "product1", "name": "Product 1", "price": 10.0, "available":20},
-                    {"id": "product2", "name": "Product 2", "price": 20.0, "available":30}
-                ]
-            }
-
-     */
-        /*
-        testCompound
-        {
-                "id": "order1",
-                "type": "compound",
-                "subOrders": [
-                    {
-                        "id": "order2",
-                            "type": "simple",
-                            "products": [
-                        {"id": "product1", "name": "Product 1", "price": 10.0, "available":10},
-                        {"id": "product2", "name": "Product 2", "price": 20.0, "available":20}
-                    ]
-                    },
-                    {
-                        "id": "order3",
-                            "type": "simple",
-                            "products": [
-                        {"id": "product3", "name": "Product 3", "price": 30.0, "available":30}
-                    ]
-                    }
-                ]
-
-    }
-    */
