@@ -19,8 +19,9 @@ public class SimpleOrder extends Order {
     @Override
     public void display() {
         System.out.print("ID: " + this.id + " Buyer: " + this.buyerName);
-        for (int i = 0; i < products.size(); ++i) {
-            System.out.print((i + 1) + "\n\tSerial: " + products.get(i));
+        int i = 1;
+        for (String serial : products.keySet()) {
+            System.out.print((i++) + "\n\tSerial: " + products.get(serial));
         }
         System.out.println();
     }
