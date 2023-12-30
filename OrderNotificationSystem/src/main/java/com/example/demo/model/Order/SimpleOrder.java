@@ -1,6 +1,5 @@
-package com.example.demo.model;
+package com.example.demo.model.Order;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class SimpleOrder extends Order {

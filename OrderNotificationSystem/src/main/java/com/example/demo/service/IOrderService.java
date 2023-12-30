@@ -1,7 +1,7 @@
 package com.example.demo.service;
 
-import com.example.demo.model.Order;
-import com.example.demo.model.OrderType;
+import com.example.demo.model.Order.Order;
+import com.example.demo.model.Order.OrderType;
 
 public interface IOrderService {
     public Integer addOrder(Order order);

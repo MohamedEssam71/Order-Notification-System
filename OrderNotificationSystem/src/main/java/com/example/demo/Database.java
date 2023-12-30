@@ -2,8 +2,8 @@ package com.example.demo;
 
 import com.example.demo.model.Account.Account;
 import com.example.demo.model.Notifications.Notification;
-import com.example.demo.model.Order;
-import com.example.demo.model.OrderType;
+import com.example.demo.model.Order.Order;
+import com.example.demo.model.Order.OrderType;
 import com.example.demo.model.statistics.Statistics;
 import com.example.demo.model.Product;
 
