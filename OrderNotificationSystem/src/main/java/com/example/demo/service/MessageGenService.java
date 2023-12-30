@@ -30,15 +30,25 @@ public class MessageGenService {
         return String.format(newTemplate.toString(), valueList.toArray());
     }
 
-    public String generate(String type, Map<String, Object> params) {
+    public String generate(String type, Map<String, Object> params, String lang) {
         String template = null;
 
         switch (type) {
             case "order-created" -> {
-                template = "Order ${x} created";
+                if(lang.equals("en")){
+                    template = "Order ${x} created";
+                }
+                else{
+                    template = "الاردر ${x} تم انشائه";
+                }
             }
             case "order-shipped" -> {
-                template = "Order ${x} shipped";
+                if(lang.equals("en")){
+                    template = "Order ${x} shipped";
+                }
+                else{
+                    template = "الاردر ${x} تم شحنه";
+                }
             }
         }
         return format(template, params);

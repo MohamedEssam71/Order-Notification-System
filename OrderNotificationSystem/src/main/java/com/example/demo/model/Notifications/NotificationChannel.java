@@ -7,12 +7,15 @@ import java.util.*;
 public class NotificationChannel {
     String username;
     String messageType;
+
+    String lang;
     Map<String, Object> messageParams;
     List<String> channels;
 
-    public NotificationChannel(String user, String messageType, Map<String, Object> messageParams, List<String> channels) {
+    public NotificationChannel(String user, String messageType, String lang, Map<String, Object> messageParams, List<String> channels) {
         this.username = user;
         this.messageType = messageType;
+        this.lang = lang;
         this.messageParams = messageParams;
         this.channels = channels;
     }
@@ -47,5 +50,13 @@ public class NotificationChannel {
 
     public void setChannels(List<String> channels) {
         this.channels = channels;
+    }
+
+    public String getLang() {
+        return lang;
+    }
+
+    public void setLang(String lang) {
+        this.lang = lang;
     }
 }
