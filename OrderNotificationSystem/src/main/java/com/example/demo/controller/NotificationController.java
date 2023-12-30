@@ -4,6 +4,7 @@ import com.example.demo.model.Notifications.Notification;
 import com.example.demo.model.Notifications.NotificationChannel;
 import com.example.demo.model.Response;
 import com.example.demo.service.INotificationService;
+import com.example.demo.service.IStatisticsService;
 import com.example.demo.service.MessageGenService;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +21,18 @@ public class NotificationController {
     @Autowired
     MessageGenService msgSvc;
 
+    @Autowired
+    IStatisticsService statisticsService;
+
     @PostMapping("/add")
     public Response add(@RequestBody NotificationChannel notificationChannel) {
         String user = notificationChannel.getUsername();
         String notificationMessageType = notificationChannel.getMessageType();
+        String lang = notificationChannel.getLang();
         Map<String, Object> notificationMessageParams = notificationChannel.getMessageParams();
 
-        String message = msgSvc.generate(notificationMessageType, notificationMessageParams);
+        String message = msgSvc.generate(notificationMessageType, notificationMessageParams, lang);
+        statisticsService.addTemplateUsage(notificationMessageType);
 
         List<String> sendChannels = notificationChannel.getChannels();
         for (String sendChannel : sendChannels) {
