@@ -91,6 +91,11 @@ public class OrderService implements IOrderService {
         if (!orderExists(order.getId())) {
             return false;
         }
+
+        if (order.getStatus() == OrderStatus.REFUNDED) {
+            return false;
+        }
+
         for (String serial : order.getProducts().keySet()) {
             Integer quantity = order.getProducts().get(serial);
             productService.updateQuantity(serial, quantity);

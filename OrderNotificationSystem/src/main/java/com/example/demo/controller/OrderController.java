@@ -114,7 +114,7 @@ public class OrderController {
     public Response refundCompound(@PathVariable("id") String id) {
         Response response = new Response();
 
-        Boolean exists = orderService.removeOrder(id);
+        Boolean exists = orderService.orderExists(id);
         if (!exists) {
             response.setStatus(false);
             response.setMessage("Order doesn't exist");
@@ -122,6 +122,12 @@ public class OrderController {
         }
 
         CompoundOrder order = (CompoundOrder) orderService.getOrder(id);
+
+        if (order.getStatus() == OrderStatus.REFUNDED) {
+            response.setStatus(false);
+            response.setMessage("Order Already refunded");
+            return response;
+        }
 
         Double personFees = orderFees / order.getOrders().size();
         for (Order sub : order.getOrders()) {
@@ -143,7 +149,7 @@ public class OrderController {
     public Response refundSimple(@PathVariable("id") String id) {
         Response response = new Response();
 
-        Boolean exists = orderService.removeOrder(id);
+        Boolean exists = orderService.orderExists(id);
         if (!exists) {
             response.setStatus(false);
             response.setMessage("Order doesn't exist");
@@ -151,13 +157,18 @@ public class OrderController {
         }
 
         Order order = orderService.getOrder(id);
-        orderService.refundOrder(order, orderFees);
-        if (order.getStatus() == OrderStatus.SHIPPED) {
-            response.setStatus(true);
-            response.setMessage("Only order price refunded");
+        Boolean refunded = orderService.refundOrder(order, orderFees);
+        if (refunded) {
+            if (order.getStatus() == OrderStatus.SHIPPED) {
+                response.setStatus(true);
+                response.setMessage("Only order price refunded");
+            } else {
+                response.setStatus(true);
+                response.setMessage("Order fully refunded");
+            }
         } else {
-            response.setStatus(true);
-            response.setMessage("Order fully refunded");
+            response.setStatus(false);
+            response.setMessage("Order Already refunded");
         }
         return response;
     }
