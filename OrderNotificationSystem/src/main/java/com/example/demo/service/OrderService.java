@@ -45,8 +45,18 @@ public class OrderService implements IOrderService {
 
     @Override
     public Order getOrder(String id) {
-        Order order = Database.orderDB.get(id);
-        return order;
+        if (!orderExists(id)) {
+            return null;
+        }
+        return Database.orderDB.get(id);
+    }
+
+    @Override
+    public OrderType getOrderType(String id) {
+        if(!orderExists(id)){
+            return null;
+        }
+        return Database.orderType.get(id);
     }
 
     @Override
