@@ -152,8 +152,6 @@ public class OrderController {
                 type, lang, notificationParams, channels);
     }
 
-}
-
     @GetMapping("/refund/compound/{id}")
     public Response refundCompound(@PathVariable("id") String id) {
         Response response = new Response();
