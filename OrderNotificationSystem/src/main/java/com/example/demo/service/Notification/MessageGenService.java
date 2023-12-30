@@ -1,4 +1,4 @@
-package com.example.demo.service;
+package com.example.demo.service.Notification;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;

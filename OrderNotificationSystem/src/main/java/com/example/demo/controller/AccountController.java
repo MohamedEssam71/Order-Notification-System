@@ -3,7 +3,7 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Account.Account;
 import com.example.demo.model.Response;
-import com.example.demo.service.IAccService;
+import com.example.demo.service.Account.IAccService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

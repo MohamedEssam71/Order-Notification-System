@@ -1,4 +1,4 @@
-package com.example.demo.service;
+package com.example.demo.service.Notification;
 
 import com.example.demo.model.Account.Account;
 import com.example.demo.model.Notifications.Notification;

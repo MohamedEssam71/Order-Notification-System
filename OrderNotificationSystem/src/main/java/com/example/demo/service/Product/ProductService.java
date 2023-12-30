@@ -1,7 +1,8 @@
-package com.example.demo.service;
+package com.example.demo.service.Product;
 
 import com.example.demo.Database;
 import com.example.demo.model.Product;
+import com.example.demo.service.Product.IProductService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

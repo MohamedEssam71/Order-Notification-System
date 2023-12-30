@@ -1,4 +1,4 @@
-package com.example.demo.service;
+package com.example.demo.service.Account;
 
 import com.example.demo.Database;
 import com.example.demo.model.Account.Account;

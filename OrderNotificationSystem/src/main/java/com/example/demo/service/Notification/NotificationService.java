@@ -1,8 +1,12 @@
-package com.example.demo.service;
+package com.example.demo.service.Notification;
 
 import com.example.demo.model.Account.Account;
 import com.example.demo.model.Notifications.*;
 import com.example.demo.Database;
+import com.example.demo.service.Account.IAccService;
+import com.example.demo.service.Notification.INotificationService;
+import com.example.demo.service.Notification.IStatisticsService;
+import com.example.demo.service.Notification.MessageGenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

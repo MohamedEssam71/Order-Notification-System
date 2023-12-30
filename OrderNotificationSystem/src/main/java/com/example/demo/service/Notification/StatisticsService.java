@@ -1,6 +1,7 @@
-package com.example.demo.service;
+package com.example.demo.service.Notification;
 
 import com.example.demo.Database;
+import com.example.demo.service.Notification.IStatisticsService;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;

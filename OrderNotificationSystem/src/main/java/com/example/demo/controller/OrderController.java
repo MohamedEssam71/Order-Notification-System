@@ -2,11 +2,10 @@ package com.example.demo.controller;
 
 import com.example.demo.model.*;
 import com.example.demo.model.Order.*;
-import com.example.demo.service.IStatisticsService;
-import com.example.demo.service.OrderService;
+import com.example.demo.service.Notification.IStatisticsService;
 import com.example.demo.model.Notifications.NotificationChannel;
-import com.example.demo.service.INotificationService;
-import com.example.demo.service.IOrderService;
+import com.example.demo.service.Notification.INotificationService;
+import com.example.demo.service.Order.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

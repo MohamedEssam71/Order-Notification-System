@@ -1,6 +1,5 @@
-package com.example.demo.service;
+package com.example.demo.service.Notification;
 
-import com.example.demo.Database;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
