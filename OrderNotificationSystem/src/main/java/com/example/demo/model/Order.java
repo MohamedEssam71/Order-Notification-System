@@ -3,11 +3,11 @@ package com.example.demo.model;
 import com.example.demo.model.Account.Account;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public abstract class Order {
     protected String id;
     protected String buyerName;
-
     protected Boolean shipped = false;
 
     Order(String id, String buyerName) {
@@ -23,9 +23,7 @@ public abstract class Order {
         return id;
     }
 
-    public abstract Double getPrice();
-
-    public abstract ArrayList<Product> getProducts();
+    public abstract HashMap<String, Integer> getProducts();
 
     public Boolean getShipped() {
         return shipped;

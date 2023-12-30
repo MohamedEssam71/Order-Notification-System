@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class CompoundOrder extends Order {
     private ArrayList<SimpleOrder> orders;
@@ -19,15 +20,17 @@ public class CompoundOrder extends Order {
     }
 
     @Override
-    public Double getPrice() {
-        return orders.stream().mapToDouble(Order::getPrice).sum();
-    }
-
-    @Override
-    public ArrayList<Product> getProducts() {
-        ArrayList<Product> products = new ArrayList<>();
-        for (int i = 0; i < orders.size(); ++i) {
-            products.addAll(orders.get(i).getProducts());
+    public HashMap<String, Integer> getProducts() {
+        HashMap<String, Integer> products = new HashMap<>();
+        for (SimpleOrder order : orders) {
+            HashMap<String, Integer> orderProducts = order.getProducts();
+            for (String key : orderProducts.keySet()) {
+                if (products.containsKey(key)) {
+                    products.put(key, products.get(key) + orderProducts.get(key));
+                } else {
+                    products.put(key, orderProducts.get(key));
+                }
+            }
         }
         return products;
     }

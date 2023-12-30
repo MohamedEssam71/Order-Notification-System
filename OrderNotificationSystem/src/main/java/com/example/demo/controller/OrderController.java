@@ -14,6 +14,13 @@ public class OrderController {
 
     @PostMapping("/add/simpleOrder")
     public Response addSimpleOrder(@RequestBody SimpleOrder order) {
+        if (!orderService.validateOrderItemsAvailable(order)) {
+            Response response = new Response();
+            response.setStatus(false);
+            response.setMessage("Ordered Items are unavailable");
+            return response;
+        }
+
         if (orderService.validateOrder(order)) {
             orderService.payOrder(order, orderFees);
         } else {
@@ -27,13 +34,18 @@ public class OrderController {
 
     @PostMapping("/add/compoundOrder")
     public Response addCompoundOrder(@RequestBody CompoundOrder order) {
+        if (!orderService.validateOrderItemsAvailable(order)) {
+            Response response = new Response();
+            response.setStatus(false);
+            response.setMessage("Ordered Items are unavailable");
+            return response;
+        }
+
         boolean allValid = true;
         for (Order sub : order.getOrders()) {
             allValid &= orderService.validateOrder(sub);
         }
-
         double personFees = orderFees / order.getOrders().size();
-
         if (allValid) {
             for (Order sub : order.getOrders()) {
                 orderService.payOrder(sub, personFees);
@@ -85,7 +97,8 @@ public class OrderController {
 
     @GetMapping("/getPrice/{id}")
     public Double getOrderPrice(@PathVariable("id") String id) {
-        return orderService.getOrder(id).getPrice();
+        Order order = orderService.getOrder(id);
+        return orderService.calculateOrderPrice(order);
     }
 
     @GetMapping("/ship/{id}")

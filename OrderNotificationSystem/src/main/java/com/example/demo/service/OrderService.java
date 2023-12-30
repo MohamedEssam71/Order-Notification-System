@@ -6,10 +6,14 @@ import com.example.demo.model.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+
 @Service
 public class OrderService implements IOrderService {
     @Autowired
     AccService accService;
+    @Autowired
+    IProductService productService;
 
     @Override
     public Integer addOrder(Order order) {
@@ -44,12 +48,32 @@ public class OrderService implements IOrderService {
         if (buyer == null) {
             return false;
         }
-        return buyer.getBalance() >= order.getPrice();
+        return buyer.getBalance() >= calculateOrderPrice(order);
     }
 
     @Override
+    public Boolean validateOrderItemsAvailable(Order order) {
+        HashMap<String, Integer> products = order.getProducts();
+        for (String serial : products.keySet()) {
+            Integer quantity = products.get(serial);
+            if (!productService.productExists(serial)) {
+                return false;
+            }
+            if (!productService.checkAvailable(serial, quantity)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    @Override
     public Boolean payOrder(Order order, double fees) {
-        return accService.updateBalance(order.getBuyerName(), -(order.getPrice() + fees));
+        for (String serial : order.getProducts().keySet()) {
+            Integer quantity = order.getProducts().get(serial);
+            productService.updateQuantity(serial, -quantity);
+        }
+        return accService.updateBalance(order.getBuyerName(), -(calculateOrderPrice(order) + fees));
     }
 
     @Override
@@ -59,11 +83,14 @@ public class OrderService implements IOrderService {
         return true;
     }
 
-
-    @Override
-    public Double getOrderPrice(String id) {
-        Order order = Database.orderDB.get(id);
-        return order.getPrice();
+    public Double calculateOrderPrice(Order order) {
+        Double total = 0.0;
+        for (String serial : order.getProducts().keySet()) {
+            Integer quantity = order.getProducts().get(serial);
+            Double price = productService.get(serial).getPrice() * quantity;
+            total += price;
+        }
+        return total;
     }
 
 

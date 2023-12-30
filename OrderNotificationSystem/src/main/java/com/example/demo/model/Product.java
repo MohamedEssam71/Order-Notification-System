@@ -1,9 +1,9 @@
 package com.example.demo.model;
 
 public class Product {
-    String serialNumber, name, vendor, category;
-    Double price;
-    Integer available;
+    private String serialNumber, name, vendor, category;
+    private Double price;
+    private Integer available;
    public Product(String serialNumber, String name, Double price, Integer available){
         this.serialNumber = serialNumber;
         this.name = name;
