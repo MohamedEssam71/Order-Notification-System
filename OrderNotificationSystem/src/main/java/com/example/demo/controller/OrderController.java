@@ -114,6 +114,44 @@ public class OrderController {
         }
         return response;
     }
+
+    @GetMapping("/refund/compound/{id}")
+    public Response refundCompound(@PathVariable("id") String id) {
+        Response response = new Response();
+
+        CompoundOrder order = (CompoundOrder) orderService.getOrder(id);
+
+        Double personFees = orderFees / order.getOrders().size();
+        for (Order sub : order.getOrders()) {
+            orderService.refundOrder(sub, personFees);
+        }
+
+        Boolean status = order.getShipped();
+        if (!status) {
+            response.setStatus(true);
+            response.setMessage("Order fully refunded");
+        } else {
+            response.setStatus(true);
+            response.setMessage("Only order price refunded");
+        }
+        return response;
+    }
+
+    @GetMapping("/refund/simple/{id}")
+    public Response refundSimple(@PathVariable("id") String id) {
+        Response response = new Response();
+        Order order = orderService.getOrder(id);
+        orderService.refundOrder(order, orderFees);
+        Boolean status = order.getShipped();
+        if (!status) {
+            response.setStatus(true);
+            response.setMessage("Order fully refunded");
+        } else {
+            response.setStatus(true);
+            response.setMessage("Only order price refunded");
+        }
+        return response;
+    }
 }
 
 

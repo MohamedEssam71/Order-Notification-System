@@ -77,6 +77,16 @@ public class OrderService implements IOrderService {
     }
 
     @Override
+    public Boolean refundOrder(Order order, double fees) {
+        for (String serial : order.getProducts().keySet()) {
+            Integer quantity = order.getProducts().get(serial);
+            productService.updateQuantity(serial, quantity);
+        }
+        Double returnedFees = order.getShipped() ? 0 : fees * 0.5;
+        return accService.updateBalance(order.getBuyerName(), calculateOrderPrice(order) + returnedFees);
+    }
+
+    @Override
     public Boolean shipOrder(String id) {
         Order order = getOrder(id);
         order.setShipped(true);

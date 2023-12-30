@@ -12,8 +12,9 @@ public interface IOrderService {
     public Boolean validateOrder(Order order);
     public Boolean validateOrderItemsAvailable(Order order);
 
-
     public Boolean payOrder(Order order, double fees);
+
+    public Boolean refundOrder(Order order, double fees);
 
     public Boolean shipOrder(String id);
 
