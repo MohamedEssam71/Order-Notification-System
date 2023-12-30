@@ -1,15 +1,25 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.*;
-import com.example.demo.service.OrderService;
+import com.example.demo.model.Notifications.NotificationChannel;
+import com.example.demo.service.INotificationService;
+import com.example.demo.service.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/order")
 public class OrderController {
     @Autowired
-    OrderService orderService;
+    IOrderService orderService;
+
+    @Autowired
+    INotificationService notificationService;
+
     final double orderFees = 50.0;
 
     @PostMapping("/add/simpleOrder")
@@ -63,6 +73,9 @@ public class OrderController {
         Response response = new Response();
         Integer status = orderService.addOrder(order);
         if (status == 1) {
+            NotificationChannel notificationChannel = createNotificationChannel(order, "order-created", "en");
+            notificationService.addNotification(notificationChannel);
+
             response.setStatus(true);
             response.setMessage("Order added successfully");
         } else {
@@ -105,7 +118,12 @@ public class OrderController {
     public Response shipOrder(@PathVariable("id") String id) {
         Response response = new Response();
         Boolean status = orderService.shipOrder(id);
+
         if (status) {
+            Order order = orderService.getOrder(id);
+            NotificationChannel notificationChannel = createNotificationChannel(order, "order-shipped", "en");
+            notificationService.addNotification(notificationChannel);
+
             response.setStatus(true);
             response.setMessage("Order shipping");
         } else {
@@ -114,6 +132,22 @@ public class OrderController {
         }
         return response;
     }
+
+    private NotificationChannel createNotificationChannel(Order order, String type, String lang) {
+        Map<String, Object> notificationParams = new HashMap<>() {
+            {
+                put("id", order.getId());
+                put("price", orderService.calculateOrderPrice(order));
+            }
+        };
+        ArrayList<String> channels = new ArrayList<>() {{
+            add("SMS");
+            add("Email");
+        }};
+        return new NotificationChannel(order.getBuyerName(),
+                type, lang, notificationParams, channels);
+    }
+
 }
 
 

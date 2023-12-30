@@ -36,18 +36,18 @@ public class MessageGenService {
         switch (type) {
             case "order-created" -> {
                 if(lang.equals("en")){
-                    template = "Order ${x} created";
+                    template = "Order ${id} created. Price = ${price}";
                 }
                 else if(lang.equals("ar")){
-                    template = "الاوردر ${x} تم انشائه";
+                    template = "الاوردر ${id} تم انشائه. السعر = ${price}";
                 }
             }
             case "order-shipped" -> {
                 if(lang.equals("en")){
-                    template = "Order ${x} shipped";
+                    template = "Shipping order ${id}. Price = ${price}";
                 }
                 else if(lang.equals("ar")){
-                    template = "الاوردر ${x} تم شحنه";
+                    template = "الاوردر ${id} يتم شحنه. السعر = ${price}";
                 }
             }
         }
