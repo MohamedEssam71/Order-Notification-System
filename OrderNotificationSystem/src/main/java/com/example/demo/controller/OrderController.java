@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import com.example.demo.model.*;
 import com.example.demo.model.Order.*;
+import com.example.demo.service.IStatisticsService;
 import com.example.demo.service.OrderService;
 import com.example.demo.model.Notifications.NotificationChannel;
 import com.example.demo.service.INotificationService;
@@ -21,6 +22,8 @@ public class OrderController {
 
     @Autowired
     INotificationService notificationService;
+    @Autowired
+    IStatisticsService statisticsService;
 
     final double orderFees = 50.0;
 
@@ -81,7 +84,7 @@ public class OrderController {
         if (status == 1) {
             NotificationChannel notificationChannel = createNotificationChannel(order, "order-created", "en");
             notificationService.addNotification(notificationChannel);
-
+            statisticsService.addTemplateUsage("order-created");
             response.setStatus(true);
             response.setMessage("Order added successfully");
         } else {
@@ -123,6 +126,7 @@ public class OrderController {
             Order order = orderService.getOrder(id);
             NotificationChannel notificationChannel = createNotificationChannel(order, "order-shipped", "en");
             notificationService.addNotification(notificationChannel);
+            statisticsService.addTemplateUsage("order-shipped");
 
             response.setStatus(true);
             response.setMessage("Order shipping");
