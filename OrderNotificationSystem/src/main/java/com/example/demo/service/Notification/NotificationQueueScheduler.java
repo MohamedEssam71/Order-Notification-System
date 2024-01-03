@@ -11,5 +11,9 @@ public class NotificationQueueScheduler {
         if(services.sendNotification()){
             System.out.println("Notification sent");
         }
+        else{
+            System.out.println("No Notification to send!");
+        }
+        System.out.println("*---------------------*");
     }
 }

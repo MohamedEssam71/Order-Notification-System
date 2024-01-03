@@ -7,7 +7,7 @@ public class SendEmailService implements SendService{
         // send email logic
 
         // as placeholder will print email to console
-        System.out.println("Email to: " + receiver);
+        System.out.println("\u001B[33m" + "Email to: "+ "\u001B[0m" + receiver);
         System.out.println(message);
         System.out.println("Best regards");
     }

@@ -46,7 +46,9 @@ public class Account {
     }
 
     public void display(){
-        System.out.println("Name: " + this.username);
-        System.out.println("Balance: " + this.balance);
+        String msg = "\u001B[36m"+"Name: " + this.username + "\n" +
+                "Balance: " + this.balance + "\u001B[0m" +"\n"
+                + "*---------------------*";
+        System.out.println(msg);
     }
 }

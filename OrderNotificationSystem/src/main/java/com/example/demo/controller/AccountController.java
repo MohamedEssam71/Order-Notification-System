@@ -39,7 +39,7 @@ public class AccountController {
             acc.display();
         } else {
             response.setStatus(false);
-            response.setMessage("Account with same name exists");
+            response.setMessage("Account is not Found!");
         }
         return response;
     }

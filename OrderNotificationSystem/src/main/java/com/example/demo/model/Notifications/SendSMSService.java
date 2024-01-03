@@ -7,7 +7,7 @@ public class SendSMSService implements SendService{
         // send sms logic
 
         // as placeholder will print sms to console
-        System.out.println("SMS to: " + receiver);
+        System.out.println("\u001B[33m" + "SMS to: "+ "\u001B[0m" + receiver);
         System.out.println(message);
     }
 }
