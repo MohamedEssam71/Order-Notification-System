@@ -1,5 +1,5 @@
 # Order-Notification-System
-Advanced Software Engineering Assignment-2
+Advanced Software Engineering Assignment-
 
 This project is a component within a larger software system, focusing on managing orders and notifications. The module allows users to make online purchases, manage notifications, and provides a RESTful API for integration.
 
